@@ -75,17 +75,17 @@
         </div>
     </div>
 
-    <div id="portal" class="fixed inset-0 hidden z-50 pointer-events-none flex items-center justify-center">
-        <div id="portal-shape" class="w-48 h-80 rounded-t-full"></div>
+    <div id="result-overlay" class="fixed inset-0 hidden z-[60] bg-black/80 backdrop-blur-2xl flex items-center justify-center p-6">
+    <div class="max-w-md w-full text-center">
+        <div id="result-tag" class="text-indigo-400 text-[10px] uppercase tracking-[0.5em] mb-4 font-bold">Inhalt entschlüsselt</div>
+        
+        <img id="result-image" src="" class="hidden w-full h-64 object-cover rounded-2xl mb-6 shadow-2xl border border-white/10">
+        
+        <p id="result-content" class="text-2xl font-light leading-snug mb-12">Lade Daten...</p>
+        
+        <button onclick="resetVault()" class="px-8 py-3 bg-white text-black text-[10px] font-bold uppercase tracking-widest rounded-full hover:scale-110 transition-transform">Nächster Versuch</button>
     </div>
-
-    <div id="result-overlay" class="fixed inset-0 hidden z-[60] bg-black/60 backdrop-blur-2xl flex items-center justify-center p-6">
-        <div class="max-w-md w-full text-center">
-            <div id="result-tag" class="text-indigo-400 text-[10px] uppercase tracking-[0.5em] mb-4">Entschlüsselt</div>
-            <p id="result-content" class="text-3xl font-light leading-snug mb-12">Lade Daten...</p>
-            <button onclick="resetVault()" class="px-8 py-3 bg-white text-black text-[10px] font-bold uppercase tracking-widest rounded-full hover:scale-110 transition-transform">Nächster Versuch</button>
-        </div>
-    </div>
+</div>
 
     <script>
         let level = localStorage.getItem('mystery-lvl') || 1;
