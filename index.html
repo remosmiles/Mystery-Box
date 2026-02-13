@@ -3,47 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Math Vault</title>
+    <title>Neon Chaos Vault</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
         body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; overflow: hidden; margin: 0; }
 
-        /* Rauch Effekt */
         .smoke-background {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1549727440-6291a1005a8d?auto=format&fit=crop&w=1920&q=80') center/cover;
-            opacity: 0.1; filter: grayscale(100%) blur(8px);
-            animation: smokePan 60s linear infinite alternate; z-index: -1;
+            opacity: 0.1; filter: grayscale(100%) blur(8px); animation: smokePan 60s linear infinite alternate; z-index: -1;
         }
         @keyframes smokePan { 0% { transform: scale(1.1); } 100% { transform: scale(1.3) translateX(-30px); } }
 
-        /* Neon Türen */
-        .door {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            border-radius: 999px 999px 0 0; border: 2px solid var(--neon);
-            box-shadow: 0 0 15px var(--neon); text-shadow: 0 0 10px var(--neon);
-        }
+        .door { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 999px 999px 0 0; border: 2px solid var(--neon); box-shadow: 0 0 15px var(--neon); text-shadow: 0 0 10px var(--neon); }
         .door:hover { transform: translateY(-20px); box-shadow: 0 0 40px var(--neon), 0 0 80px var(--neon); }
 
-        /* Zoom */
         @keyframes zoomPortal { to { transform: scale(100); opacity: 0; } }
         .animate-zoom { animation: zoomPortal 1.2s forwards ease-in; }
 
-        /* Windows Style */
-        .win-window {
-            background: #c0c0c0; border: 3px solid #fff; border-right-color: #404040; border-bottom-color: #404040;
-            color: black; box-shadow: 15px 15px 40px rgba(0,0,0,0.8); font-family: 'VT323', monospace;
-        }
+        .win-window { background: #c0c0c0; border: 3px solid #fff; border-right-color: #404040; border-bottom-color: #404040; color: black; box-shadow: 15px 15px 40px rgba(0,0,0,0.8); font-family: 'VT323', monospace; position: fixed; }
         .win-title { background: #000080; color: white; padding: 5px 10px; display: flex; justify-content: space-between; }
         
-        /* Timer Balken */
         #math-timer-bar { height: 100%; background: #00ff00; width: 100%; transition: width 5s linear; }
 
-        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(5px, 5px); } 75% { transform: translate(-5px, -5px); } }
-        .shaking { animation: shake 0.1s infinite; }
+        @keyframes extreme-flash { 0%, 100% { background: #ff0000; color: white; } 50% { background: #000; color: #ff0000; } }
+        .critical-blink { animation: extreme-flash 0.2s infinite; border: 10px solid red !important; }
+
+        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(8px, 8px); } 75% { transform: translate(-8px, -8px); } }
+        .shaking { animation: shake 0.05s infinite; }
+        
         #pixel-grid { display: grid; background: #111; border: 2px solid #333; }
         .pixel { width: 18px; height: 18px; border: 1px solid rgba(255,255,255,0.02); }
     </style>
@@ -58,42 +47,41 @@
         <div onclick="checkDoor(3, '#ff0')" style="--neon: #ff0" class="door w-44 h-72 bg-yellow-950/20">GAMMA</div>
     </div>
 
-    <div id="win-math" class="fixed hidden z-[150] win-window w-[350px]">
+    <div id="win-math" class="hidden z-[150] win-window w-[350px]">
         <div class="win-title"><span>Math-Gate-System</span><span>[X]</span></div>
         <div class="win-content text-center">
-            <p class="mb-2 text-sm uppercase">Verifizierung läuft...</p>
-            <div class="w-full h-4 bg-gray-800 mb-4 border-inner p-0.5">
-                <div id="math-timer-bar"></div>
-            </div>
-            <p id="math-question" class="text-4xl mb-6 font-bold tracking-tighter">-</p>
-            <input type="number" id="math-input" class="w-full border-2 border-gray-800 p-2 mb-4 text-3xl outline-none" autofocus>
-            <button onclick="submitMath()" class="bg-gray-300 border-2 border-white px-8 py-2 font-bold w-full">SOLVE</button>
+            <div class="w-full h-4 bg-gray-800 mb-4 p-0.5"><div id="math-timer-bar"></div></div>
+            <p id="math-question" class="text-4xl mb-6 font-bold">-</p>
+            <input type="number" id="math-input" class="w-full border-2 border-gray-800 p-2 mb-4 text-3xl outline-none">
+            <button onclick="submitMath()" class="bg-gray-300 border-2 border-white px-8 py-2 font-bold w-full shadow-[2px_2px_0_#000]">SOLVE</button>
         </div>
     </div>
 
     <div id="pixel-overlay" class="fixed inset-0 hidden z-[110] bg-black/95 flex flex-col items-center justify-center">
-        <h2 class="text-3xl mb-8 font-vt323 tracking-widest text-cyan-400 uppercase">Geheimnis entschlüsselt</h2>
+        <h2 class="text-3xl mb-8 font-vt323 text-cyan-400">PIXEL DECODER</h2>
         <div id="pixel-grid"></div>
-        <button onclick="showQuiz()" class="mt-10 px-10 py-3 bg-cyan-500 text-black font-black rounded-full hover:bg-white transition-all font-vt323 text-xl">FINALE PHASE</button>
+        <button onclick="showQuiz()" class="mt-10 px-10 py-3 bg-cyan-500 text-black font-black rounded-full font-vt323 text-xl">WEITER</button>
     </div>
 
-    <div id="win-quiz" class="fixed hidden z-[120] win-window w-[380px]">
-        <div class="win-title"><span>Security Access</span><span>[?]</span></div>
+    <div id="win-quiz" class="hidden z-[120] win-window w-[380px]">
+        <div class="win-title"><span>Logic Check</span><span>[?]</span></div>
         <div class="win-content text-center">
-            <p class="mb-4 text-xl uppercase italic">Wie viele Ecken hat ein Kreis?</p>
+            <p class="mb-4 text-xl uppercase">Was wird nass, während es trocknet?</p>
             <input type="text" id="quiz-input" class="w-full border-2 border-gray-800 p-2 mb-6 outline-none text-2xl">
-            <button onclick="startChaos()" class="bg-gray-300 border-2 border-white px-8 py-2 font-bold shadow-[2px_2px_0_#000]">OK</button>
+            <button onclick="startChaos()" class="bg-gray-300 border-2 border-white px-8 py-2 font-bold shadow-[2px_2px_0_#000]">PRÜFEN</button>
         </div>
     </div>
 
-    <div id="win-thriller" class="fixed hidden z-[130] win-window w-[420px]">
-        <div class="win-title bg-red-700"><span>CRITICAL ERROR</span><span>[!!!]</span></div>
+    <div id="chaos-container" class="fixed inset-0 hidden z-[200] pointer-events-none"></div>
+
+    <div id="win-thriller" class="hidden z-[300] win-window w-[600px] critical-blink">
+        <div class="win-title"><span>! SYSTEM FAILURE !</span><span>[!!!]</span></div>
         <div class="win-content text-center">
-            <div class="text-6xl font-black text-red-600 mb-2 animate-pulse font-vt323">DANGER</div>
-            <div class="text-4xl font-mono font-bold bg-black text-red-500 p-4 mb-6 border-4 border-red-600">
-                <span id="timer">10</span>s
+            <div class="text-9xl font-black mb-4 font-vt323">ERROR</div>
+            <p class="text-2xl font-bold mb-4">KRITISCHER SYSTEMABSTURZ</p>
+            <div id="hidden-next" class="hidden pointer-events-auto">
+                <button onclick="window.location.href='https://www.bullenpower-uri.ch'" class="bg-white text-black font-bold p-4 border-4 border-black text-2xl animate-bounce">ZUM NOTFALL-SYSTEM (BULLENPOWER)</button>
             </div>
-            <button onclick="window.location.href='https://www.bullenpower-uri.ch'" class="bg-green-600 text-white font-bold p-6 border-4 border-black text-2xl w-full shadow-2xl active:scale-95 transition-all">BULLENPOWER!</button>
         </div>
     </div>
 
@@ -104,7 +92,15 @@
     <script>
         let currentAnswer = 0;
         let mathTimeout;
-        let safeDoor = Math.floor(Math.random() * 3) + 1; // Eine Tür ist sicher
+        let safeDoor = Math.floor(Math.random() * 3) + 1;
+
+        function resetToDoors() {
+            clearTimeout(mathTimeout);
+            document.querySelectorAll('.win-window').forEach(w => w.classList.add('hidden'));
+            document.getElementById('pixel-overlay').classList.replace('flex', 'hidden');
+            document.getElementById('room').style.opacity = "1";
+            document.getElementById('room').classList.remove('pointer-events-none');
+        }
 
         function checkDoor(id, color) {
             if (id === safeDoor) {
@@ -116,36 +112,16 @@
 
         function startMathChallenge() {
             const win = document.getElementById('win-math');
-            const question = document.getElementById('math-question');
-            const input = document.getElementById('math-input');
             const bar = document.getElementById('math-timer-bar');
-
-            // Aufgabe generieren
-            const a = Math.floor(Math.random() * 20) + 1;
-            const b = Math.floor(Math.random() * 15) + 1;
-            const op = Math.random() > 0.5 ? '+' : 'x';
-            
-            if(op === '+') currentAnswer = a + b;
-            else currentAnswer = a * b;
-
-            question.innerText = `${a} ${op} ${b}`;
-            input.value = '';
-            
+            const a = Math.floor(Math.random() * 15) + 5;
+            const b = Math.floor(Math.random() * 10) + 2;
+            currentAnswer = a + b;
+            document.getElementById('math-question').innerText = `${a} + ${b}`;
+            document.getElementById('math-input').value = '';
             win.classList.remove('hidden');
-            input.focus();
-            
-            // Timer Reset & Start
-            bar.style.transition = 'none';
-            bar.style.width = '100%';
-            setTimeout(() => {
-                bar.style.transition = 'width 5s linear';
-                bar.style.width = '0%';
-            }, 50);
-
-            mathTimeout = setTimeout(() => {
-                alert("ZU LANGSAM!");
-                location.reload();
-            }, 5050);
+            bar.style.transition = 'none'; bar.style.width = '100%';
+            setTimeout(() => { bar.style.transition = 'width 5s linear'; bar.style.width = '0%'; }, 50);
+            mathTimeout = setTimeout(() => { resetToDoors(); }, 5050);
         }
 
         function submitMath() {
@@ -153,11 +129,8 @@
             if (val === currentAnswer) {
                 clearTimeout(mathTimeout);
                 document.getElementById('win-math').classList.add('hidden');
-                openVault(0, '#fff'); // Erfolg!
-            } else {
-                alert("FALSCH! ZUGANG VERWEIGERT.");
-                location.reload();
-            }
+                openVault(0, '#fff');
+            } else { resetToDoors(); }
         }
 
         function openVault(id, color) {
@@ -167,6 +140,7 @@
             portal.classList.remove('hidden');
             shape.classList.add('animate-zoom');
             document.getElementById('room').style.opacity = "0";
+            document.getElementById('room').classList.add('pointer-events-none');
 
             setTimeout(() => {
                 portal.classList.add('hidden');
@@ -179,10 +153,9 @@
             const grid = document.getElementById('pixel-grid');
             grid.innerHTML = '';
             grid.style.gridTemplateColumns = `repeat(15, 18px)`;
-            for (let i = 0; i < 15 * 15; i++) {
+            for (let i = 0; i < 225; i++) {
                 const pixel = document.createElement('div');
                 pixel.classList.add('pixel');
-                if (Math.random() > 0.8) pixel.style.backgroundColor = '#0ff';
                 pixel.onclick = () => { pixel.style.backgroundColor = '#0ff'; };
                 grid.appendChild(pixel);
             }
@@ -194,25 +167,41 @@
         }
 
         function startChaos() {
-            const body = document.getElementById('main-body');
-            body.classList.add('shaking');
+            document.getElementById('main-body').classList.add('shaking');
             document.getElementById('win-quiz').classList.add('hidden');
-            document.getElementById('pixel-overlay').classList.replace('hidden', 'flex');
+            const chaos = document.getElementById('chaos-container');
+            chaos.classList.remove('hidden');
+
+            // Diverse Fehlerfenster aufploppen lassen
+            for(let i=0; i<15; i++) {
+                setTimeout(() => {
+                    const div = document.createElement('div');
+                    div.className = "win-window w-64 p-2 pointer-events-auto";
+                    div.style.left = Math.random()*70 + "%";
+                    div.style.top = Math.random()*70 + "%";
+                    div.innerHTML = `<div class="win-title">Error</div><div class="p-4">FATAL ERROR ${i}0x99</div>`;
+                    chaos.appendChild(div);
+                }, i * 150);
+            }
+
             setTimeout(() => {
-                body.classList.remove('shaking');
-                document.getElementById('pixel-overlay').classList.replace('flex', 'hidden');
-                startThriller();
-            }, 3000);
+                document.getElementById('win-thriller').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('hidden-next').classList.remove('hidden');
+                }, 2000);
+            }, 1000);
         }
 
-        function startThriller() {
-            document.getElementById('win-thriller').classList.remove('hidden');
-            let timeLeft = 10;
-            const countdown = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').innerText = timeLeft;
-                if (timeLeft <= 0) { clearInterval(countdown); location.reload(); }
-            }, 1000);
+        function generatePixelArt() {
+            const grid = document.getElementById('pixel-grid');
+            grid.innerHTML = '';
+            grid.style.gridTemplateColumns = `repeat(15, 18px)`;
+            for (let i = 0; i < 15 * 15; i++) {
+                const pixel = document.createElement('div');
+                pixel.classList.add('pixel');
+                pixel.onclick = () => { pixel.style.backgroundColor = '#0ff'; };
+                grid.appendChild(pixel);
+            }
         }
     </script>
 </body>
