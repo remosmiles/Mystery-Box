@@ -3,99 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mystery Vault - Thriller Edition v3</title>
+    <title>Mystery Vault - Final Stable</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #050505; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; margin: 0; }
-        
-        /* Türen Design */
-        .door { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .door:hover { transform: translateY(-15px); filter: brightness(1.3); box-shadow: 0 0 30px rgba(255,255,255,0.1); }
+        body { background: #050505; color: white; font-family: sans-serif; overflow: hidden; margin: 0; }
+        .door { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .door:hover { transform: translateY(-15px); filter: brightness(1.3); }
 
-        /* Zoom Animation */
         @keyframes zoomPortal {
             0% { transform: scale(1); opacity: 1; }
             100% { transform: scale(80); opacity: 0; }
         }
         .animate-zoom { animation: zoomPortal 1.1s forwards cubic-bezier(0.7, 0, 0.3, 1); }
 
-        /* Vibration (Chaos Modus) */
         @keyframes shake {
-            0% { transform: translate(3px, 3px) rotate(0deg); }
-            20% { transform: translate(-3px, -4px) rotate(-2deg); }
-            40% { transform: translate(-5px, 2px) rotate(3deg); }
-            60% { transform: translate(3px, 4px) rotate(-1deg); }
-            80% { transform: translate(-2px, -2px) rotate(2deg); }
-            100% { transform: translate(3px, -3px) rotate(0deg); }
+            0% { transform: translate(3px, 3px); }
+            50% { transform: translate(-3px, -3px); }
+            100% { transform: translate(3px, 3px); }
         }
         .shaking { animation: shake 0.1s infinite; }
 
-        /* Windows 95 Style */
-        .win-window {
-            background: #c0c0c0;
-            border: 3px solid #fff;
-            border-right-color: #404040;
-            border-bottom-color: #404040;
-            color: black;
-            box-shadow: 15px 15px 30px rgba(0,0,0,0.7);
-        }
-        .win-title { background: #000080; color: white; padding: 5px 10px; font-weight: bold; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
-        .win-content { padding: 30px; }
-        
-        button.win-btn {
-            background: #c0c0c0;
-            border: 2px solid #fff;
-            border-right-color: #404040;
-            border-bottom-color: #404040;
-            padding: 5px 15px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button.win-btn:active {
-            border: 2px solid #404040;
-            border-right-color: #fff;
-            border-bottom-color: #fff;
-        }
+        .win-window { background: #c0c0c0; border: 3px solid #fff; border-right-color: #404040; border-bottom-color: #404040; color: black; box-shadow: 15px 15px 30px rgba(0,0,0,0.7); }
+        .win-title { background: #000080; color: white; padding: 5px 10px; font-weight: bold; font-size: 14px; display: flex; justify-content: space-between; }
+        .win-content { padding: 25px; }
     </style>
 </head>
 <body id="main-body" class="min-h-screen flex items-center justify-center">
 
     <div id="room" class="flex gap-10 z-10 transition-opacity duration-500">
-        <div onclick="openVault(1, '#064e3b')" class="door w-40 h-72 bg-emerald-950 rounded-t-full border border-emerald-500/40 text-emerald-500/50">ALPHA</div>
-        <div onclick="openVault(2, '#1e1b4b')" class="door w-40 h-72 bg-indigo-950 rounded-t-full border border-indigo-500/40 text-indigo-500/50">BETA</div>
-        <div onclick="openVault(3, '#4c0519')" class="door w-40 h-72 bg-rose-950 rounded-t-full border border-rose-500/40 text-rose-500/50">GAMMA</div>
+        <div onclick="openVault(1, '#064e3b')" class="door w-40 h-72 bg-emerald-900 rounded-t-full border border-emerald-500/40">ALPHA</div>
+        <div onclick="openVault(2, '#1e1b4b')" class="door w-40 h-72 bg-indigo-900 rounded-t-full border border-indigo-500/40">BETA</div>
+        <div onclick="openVault(3, '#4c0519')" class="door w-40 h-72 bg-rose-900 rounded-t-full border border-rose-500/40">GAMMA</div>
     </div>
 
     <div id="portal" class="fixed inset-0 hidden z-[100] flex items-center justify-center pointer-events-none">
         <div id="portal-shape" class="w-40 h-72 rounded-t-full"></div>
     </div>
 
-    <div id="overlay-photo" class="fixed inset-0 hidden z-[110] bg-black/95 flex flex-col items-center justify-center p-8">
-        <img id="result-img" src="" class="max-w-md w-full rounded-lg border-2 border-white/20 shadow-2xl mb-10">
-        <button onclick="showQuiz()" class="px-12 py-4 bg-white text-black rounded-full font-black tracking-widest hover:bg-gray-200 transition-colors uppercase text-sm shadow-xl">Entschlüsseln</button>
+    <div id="overlay-photo" class="fixed inset-0 hidden z-[110] bg-black/95 flex flex-col items-center justify-center p-8 text-center">
+        <p id="loading-text" class="text-white/50 text-xs mb-4 animate-pulse">Lade verschlüsseltes Bild...</p>
+        <img id="result-img" src="" class="max-w-md w-full rounded-lg border-2 border-white/20 shadow-2xl mb-10 min-h-[200px] bg-white/5">
+        <button onclick="showQuiz()" class="px-12 py-4 bg-white text-black rounded-full font-black tracking-widest uppercase text-sm shadow-xl hover:scale-105 transition-transform">Entschlüsseln</button>
     </div>
 
-    <div id="win-quiz" class="fixed hidden z-[120] win-window w-[400px]">
-        <div class="win-title"><span>System Diagnostic Tool</span><span>[?]</span></div>
+    <div id="win-quiz" class="fixed hidden z-[120] win-window w-[350px]">
+        <div class="win-title"><span>Sicherheits-Check</span><span>[?]</span></div>
         <div class="win-content text-center">
-            <p class="mb-6 font-bold text-lg italic uppercase tracking-tight text-blue-900">Sicherheitsfrage: Wie viele Ecken hat ein Kreis?</p>
-            <input type="text" id="quiz-input" placeholder="Lösung hier..." class="w-full border-2 border-gray-800 p-3 mb-8 bg-white outline-none font-mono">
-            <button onclick="startChaos()" class="win-btn w-full py-2">EINGABE BESTÄTIGEN</button>
+            <p class="mb-4 font-bold">Wie viele Ecken hat ein Kreis?</p>
+            <input type="text" id="quiz-input" class="w-full border-2 border-gray-800 p-2 mb-6 bg-white outline-none">
+            <button onclick="startChaos()" class="bg-gray-300 border-2 border-white px-6 py-2 border-r-gray-700 border-b-gray-700 font-bold">OK</button>
         </div>
     </div>
 
-    <div id="win-thriller" class="fixed hidden z-[130] win-window w-[450px]">
-        <div class="win-title bg-red-700"><span>!!! CRITICAL ALERT !!!</span><span>[!!!]</span></div>
-        <div class="win-content text-center bg-red-50">
-            <div class="text-7xl font-black text-red-600 mb-2 animate-pulse">DANGER</div>
-            <div class="text-4xl font-mono font-bold bg-black text-red-500 p-4 mb-6 border-4 border-red-600">
+    <div id="win-thriller" class="fixed hidden z-[130] win-window w-[380px]">
+        <div class="win-title bg-red-700"><span>CRITICAL ALERT</span><span>!!!</span></div>
+        <div class="win-content text-center">
+            <div class="text-5xl font-black text-red-600 mb-2 italic">DANGER</div>
+            <div class="text-3xl font-mono font-bold bg-black text-red-500 p-3 mb-6">
                 <span id="timer">10</span>s
             </div>
-            <p class="mb-8 font-extrabold text-red-900 uppercase">SYSTEMÜBERLASTUNG! NUR BULLENPOWER RETTET DICH!</p>
-            <div class="flex justify-center gap-6">
-                <button onclick="window.location.href='https://www.bullenpower-uri.ch'" class="bg-green-600 text-white font-bold p-6 border-4 border-black hover:bg-green-700 text-xl shadow-lg active:scale-95 transition-all">JETZT JA!</button>
-                <button onclick="alert('FEHLER: ZUGRIFF VERWEIGERT!')" class="bg-gray-400 text-white p-6 border-4 border-black opacity-30 text-xl">NEIN</button>
-            </div>
+            <p class="mb-6 font-bold text-red-900 uppercase text-xs">System-Kollaps verhindert durch Bullenpower!</p>
+            <button onclick="window.location.href='https://www.bullenpower-uri.ch'" class="bg-green-600 text-white font-bold p-5 border-4 border-black text-lg w-full shadow-lg">JETZT JA!</button>
         </div>
     </div>
 
@@ -104,36 +72,26 @@
             const portal = document.getElementById('portal');
             const shape = document.getElementById('portal-shape');
             const room = document.getElementById('room');
-            
-            // Start Animation
+            const img = document.getElementById('result-img');
+            const loading = document.getElementById('loading-text');
+
             shape.style.background = color;
             portal.classList.remove('hidden');
             shape.classList.add('animate-zoom');
             room.style.opacity = "0";
 
-            setTimeout(() => {
-                const img = document.getElementById('result-img');
-                const randomId = Math.floor(Math.random() * 2000);
-                
-                // Themen-Logik
-                let topic = "mystic";
-                if(id === 1) topic = "galaxy";
-                if(id === 2) topic = "neon";
-                if(id === 3) topic = "volcano";
-                
-                img.src = `https://images.unsplash.com/featured/?${topic}&sig=${randomId}`;
-                
-                // Sicherheits-Check: Sobald das Bild geladen ist oder nach Timeout
-                const proceed = () => {
-                    portal.classList.add('hidden'); // Verstecke das Zoom-Element komplett
-                    shape.classList.remove('animate-zoom'); // Reset für nächsten Durchgang
-                    document.getElementById('overlay-photo').classList.remove('hidden');
-                };
+            // Bild-URL vorbereiten (Wir nutzen Picsum als stabilere Alternative)
+            const randomID = Math.floor(Math.random() * 1000);
+            img.src = `https://picsum.photos/800/600?random=${randomID}`;
 
-                img.onload = proceed;
-                setTimeout(proceed, 1800); // Notfall-Anzeige nach 1.8s
+            // Nach der Animation umschalten
+            setTimeout(() => {
+                portal.classList.add('hidden');
+                document.getElementById('overlay-photo').classList.remove('hidden');
                 
-            }, 900);
+                // Sobald das Bild fertig geladen ist, Lade-Text weg
+                img.onload = () => { loading.classList.add('hidden'); };
+            }, 1100);
         }
 
         function showQuiz() {
@@ -144,33 +102,30 @@
         function startChaos() {
             const body = document.getElementById('main-body');
             const img = document.getElementById('result-img');
-            const randomId = Math.floor(Math.random() * 1000);
-
+            
             body.classList.add('shaking');
             document.getElementById('win-quiz').classList.add('hidden');
             document.getElementById('overlay-photo').classList.remove('hidden');
             
-            // Trauriges/Chaos Bild laden
-            img.src = `https://images.unsplash.com/featured/?glitch,scary,sad&sig=${randomId}`;
+            // Chaos Bild
+            img.src = `https://picsum.photos/800/600?grayscale&blur=2&random=${Math.random()}`;
 
             setTimeout(() => {
                 body.classList.remove('shaking');
                 document.getElementById('overlay-photo').classList.add('hidden');
                 startThriller();
-            }, 3000); // 3 Sekunden pure Panik
+            }, 3000);
         }
 
         function startThriller() {
             document.getElementById('win-thriller').classList.remove('hidden');
             let timeLeft = 10;
-            const timerDisplay = document.getElementById('timer');
-
             const countdown = setInterval(() => {
                 timeLeft--;
-                timerDisplay.innerText = timeLeft;
+                document.getElementById('timer').innerText = timeLeft;
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
-                    alert("TIMEOUT! ZUGRIFF VERWEIGERT!");
+                    alert("TIMEOUT!");
                     location.reload();
                 }
             }, 1000);
