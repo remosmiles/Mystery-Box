@@ -3,176 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Chaos Vault - Final Version</title>
+    <title>Neon Chaos Vault - Hyperdrive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
         
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; overflow: hidden; margin: 0; perspective: 1000px; }
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Segoe UI', sans-serif; 
+            overflow: hidden; 
+            margin: 0; 
+            perspective: 1000px; /* Ermöglicht 3D-Effekte */
+        }
 
+        /* Standard Hintergrund */
         .smoke-background {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1549727440-6291a1005a8d?auto=format&fit=crop&w=1920&q=80') center/cover;
-            opacity: 0.15; filter: grayscale(100%) blur(5px); z-index: -1;
+            opacity: 0.15; filter: grayscale(100%) blur(5px); 
+            z-index: -1;
         }
 
-        /* Flug-Tunnel */
+        /* Der Tunnel-Flug-Effekt */
         .tunnel-layer {
-            position: fixed; top: 50%; left: 50%; width: 100vw; height: 100vh;
+            position: fixed;
+            top: 50%; left: 50%;
+            width: 100vw; height: 100vh;
             background: url('https://images.unsplash.com/photo-1549727440-6291a1005a8d?auto=format&fit=crop&w=1920&q=80') center/cover;
-            transform: translate(-50%, -50%) scale(0.1); opacity: 0; pointer-events: none; z-index: 50;
-            border: 2px solid rgba(0, 255, 255, 0.5); animation: hyperdrive 2.5s ease-in forwards;
+            transform: translate(-50%, -50%) scale(0.1);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 50;
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.2);
+            animation: hyperdrive 2.5s ease-in forwards;
         }
+
         @keyframes hyperdrive {
-            0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0; }
+            0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0; filter: blur(10px) hue-rotate(0deg); }
             20% { opacity: 0.8; }
-            100% { transform: translate(-50%, -50%) scale(8); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(8); opacity: 0; filter: blur(0px) hue-rotate(180deg); }
         }
 
-        /* Fenster Design */
-        .win-window { background: #c0c0c0; border: 3px solid #fff; border-right-color: #404040; border-bottom-color: #404040; color: black; box-shadow: 15px 15px 40px rgba(0,0,0,0.8); font-family: 'VT323', monospace; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .door { 
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            cursor: pointer; display: flex; align-items: center; justify-content: center; 
+            border-radius: 999px 999px 0 0; border: 2px solid var(--neon); 
+            box-shadow: 0 0 15px var(--neon); text-shadow: 0 0 10px var(--neon); 
+        }
+        .door:hover { transform: translateY(-20px); box-shadow: 0 0 40px var(--neon), 0 0 80px var(--neon); }
+
+        @keyframes zoomPortal { to { transform: scale(100); opacity: 0; } }
+        .animate-zoom { animation: zoomPortal 1.2s forwards ease-in; }
+
+        .win-window { background: #c0c0c0; border: 3px solid #fff; border-right-color: #404040; border-bottom-color: #404040; color: black; box-shadow: 15px 15px 40px rgba(0,0,0,0.8); font-family: 'VT323', monospace; position: fixed; }
         .win-title { background: #000080; color: white; padding: 5px 10px; display: flex; justify-content: space-between; }
+        
+        #math-timer-bar { height: 100%; background: #00ff00; width: 100%; transition: width 5s linear; }
 
-        /* Türen */
-        .door { transition: all 0.3s; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 999px 999px 0 0; border: 2px solid var(--neon); box-shadow: 0 0 15px var(--neon); text-shadow: 0 0 10px var(--neon); font-weight: bold; }
-        .door:hover { transform: translateY(-10px); filter: brightness(1.5); }
-        .door-error { animation: door-red 0.5s; }
-        @keyframes door-red { 0%, 100% { border-color: red; box-shadow: 0 0 20px red; } 50% { border-color: white; } }
+        @keyframes extreme-flash { 0%, 100% { background: #ff0000; color: white; } 50% { background: #000; color: #ff0000; } }
+        .critical-blink { animation: extreme-flash 0.2s infinite; border: 10px solid red !important; }
 
-        /* Absturz */
-        @keyframes flutter { 0% { transform: translate(-50%, -50%) rotate(0deg); } 25% { transform: translate(-52%, -48%) rotate(3deg); } 75% { transform: translate(-48%, -52%) rotate(-3deg); } }
-        .fluttering { animation: flutter 0.1s infinite !important; filter: invert(1); }
+        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(8px, 8px); } 75% { transform: translate(-8px, -8px); } }
         .shaking { animation: shake 0.05s infinite; }
-        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(5px, 5px); } 75% { transform: translate(-5px, -5px); } }
-
-        .pixel { width: 18px; height: 18px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        
+        #pixel-grid { display: grid; background: #111; border: 2px solid #333; }
+        .pixel { width: 18px; height: 18px; border: 1px solid rgba(255,255,255,0.02); }
     </style>
 </head>
 <body id="main-body" class="min-h-screen flex items-center justify-center">
 
     <div class="smoke-background"></div>
 
-    <div id="room" class="flex gap-10 z-10">
-        <div id="door-1" onclick="checkDoor(1, '#0ff')" style="--neon: #0ff" class="door w-44 h-72 bg-cyan-950/20">ALPHA</div>
-        <div id="door-2" onclick="checkDoor(2, '#f0f')" style="--neon: #f0f" class="door w-44 h-72 bg-fuchsia-950/20">BETA</div>
-        <div id="door-3" onclick="checkDoor(3, '#ff0')" style="--neon: #ff0" class="door w-44 h-72 bg-yellow-950/20">GAMMA</div>
+    <div id="room" class="flex gap-10 z-10 transition-opacity duration-700">
+        <div onclick="checkDoor(1, '#0ff')" style="--neon: #0ff" class="door w-44 h-72 bg-cyan-950/20">ALPHA</div>
+        <div onclick="checkDoor(2, '#f0f')" style="--neon: #f0f" class="door w-44 h-72 bg-fuchsia-950/20">BETA</div>
+        <div onclick="checkDoor(3, '#ff0')" style="--neon: #ff0" class="door w-44 h-72 bg-yellow-950/20">GAMMA</div>
     </div>
 
-    <div id="win-binary" class="hidden z-[200] win-window w-[350px]">
-        <div class="win-title"><span>GATE_CONTROL.EXE</span><span>[?]</span></div>
-        <div class="p-6 text-center">
-            <p class="text-xl mb-6 font-bold uppercase">Ist 1010 in Binär gleich 10?</p>
-            <div class="flex gap-4 justify-center">
-                <button onclick="handleBinaryChoice(true)" class="bg-gray-300 border-2 border-white px-6 py-2 font-bold shadow-[2px_2px_0_#000]">JA</button>
-                <button onclick="handleBinaryChoice(false)" class="bg-gray-300 border-2 border-white px-6 py-2 font-bold shadow-[2px_2px_0_#000]">NEIN</button>
+    <div id="win-math" class="hidden z-[150] win-window w-[350px]">
+        <div class="win-title"><span>Math-Gate-System</span><span>[X]</span></div>
+        <div class="win-content text-center">
+            <div class="w-full h-4 bg-gray-800 mb-4 p-0.5"><div id="math-timer-bar"></div></div>
+            <p id="math-question" class="text-4xl mb-6 font-bold">-</p>
+            <input type="number" id="math-input" class="w-full border-2 border-gray-800 p-2 mb-4 text-3xl outline-none">
+            <button onclick="submitMath()" class="bg-gray-300 border-2 border-white px-8 py-2 font-bold w-full shadow-[2px_2px_0_#000]">SOLVE</button>
+        </div>
+    </div>
+
+    <div id="pixel-overlay" class="fixed inset-0 hidden z-[110] bg-black/95 flex flex-col items-center justify-center">
+        <h2 class="text-3xl mb-8 font-vt323 text-cyan-400">PIXEL DECODER</h2>
+        <div id="pixel-grid"></div>
+        <button onclick="showQuiz()" class="mt-10 px-10 py-3 bg-cyan-500 text-black font-black rounded-full font-vt323 text-xl">WEITER</button>
+    </div>
+
+    <div id="win-quiz" class="hidden z-[120] win-window w-[380px]">
+        <div class="win-title"><span>Logic Check</span><span>[?]</span></div>
+        <div class="win-content text-center">
+            <p class="mb-4 text-xl uppercase">Was wird nass, während es trocknet?</p>
+            <input type="text" id="quiz-input" class="w-full border-2 border-gray-800 p-2 mb-6 outline-none text-2xl">
+            <button onclick="startChaos()" class="bg-gray-300 border-2 border-white px-8 py-2 font-bold shadow-[2px_2px_0_#000]">PRÜFEN</button>
+        </div>
+    </div>
+
+    <div id="chaos-container" class="fixed inset-0 hidden z-[200] pointer-events-none"></div>
+
+    <div id="win-thriller" class="hidden z-[300] win-window w-[600px] critical-blink">
+        <div class="win-title"><span>! SYSTEM FAILURE !</span><span>[!!!]</span></div>
+        <div class="win-content text-center">
+            <div class="text-9xl font-black mb-4 font-vt323">ERROR</div>
+            <p class="text-2xl font-bold mb-4">KRITISCHER SYSTEMABSTURZ</p>
+            <div id="hidden-next" class="hidden pointer-events-auto">
+                <button onclick="window.location.href='https://www.bullenpower-uri.ch'" class="bg-white text-black font-bold p-4 border-4 border-black text-2xl animate-bounce">ZUM NOTFALL-SYSTEM (BULLENPOWER)</button>
             </div>
         </div>
     </div>
 
-    <div id="pixel-overlay" class="fixed inset-0 hidden z-[210] bg-black/98 flex flex-col items-center justify-center">
-        <h2 class="text-3xl mb-8 font-vt323 text-cyan-400">PIXEL DECODER LOADED</h2>
-        <div id="pixel-grid" class="grid bg-gray-900 border-2 border-cyan-900"></div>
-        <button onclick="window.location.href='https://www.bullenpower-uri.ch'" class="mt-8 px-8 py-3 bg-cyan-600 text-white font-bold rounded-lg font-vt323 hover:bg-cyan-400">EXIT SYSTEM</button>
-    </div>
-
-    <div id="death-screen" class="hidden fixed inset-0 z-[300] bg-red-950 flex flex-col items-center justify-center">
-        <div class="text-[12rem]">💀</div>
-        <h1 class="text-5xl font-black text-white">FATAL ERROR</h1>
-    </div>
-
-    <div id="portal" class="fixed inset-0 hidden z-[100] flex items-center justify-center">
-        <div id="portal-shape" class="w-44 h-72 rounded-t-full transition-transform duration-1000"></div>
+    <div id="portal" class="fixed inset-0 hidden z-[100] flex items-center justify-center pointer-events-none">
+        <div id="portal-shape" class="w-44 h-72 rounded-t-full"></div>
     </div>
 
     <script>
+        let currentAnswer = 0;
+        let mathTimeout;
         let safeDoor = Math.floor(Math.random() * 3) + 1;
+
+        function resetToDoors() {
+            clearTimeout(mathTimeout);
+            document.querySelectorAll('.win-window').forEach(w => w.classList.add('hidden'));
+            document.getElementById('pixel-overlay').classList.replace('flex', 'hidden');
+            document.getElementById('room').style.opacity = "1";
+            document.getElementById('room').classList.remove('pointer-events-none');
+        }
 
         function checkDoor(id, color) {
             if (id === safeDoor) {
-                openVault(color);
+                openVault(id, color);
             } else {
-                const el = document.getElementById(`door-${id}`);
-                el.classList.add('door-error');
-                setTimeout(() => el.classList.remove('door-error'), 500);
-                // Optional: Tür nach jedem Fehler neu würfeln? Aktuell bleibt sie gleich, bis man trifft.
+                startMathChallenge();
             }
         }
 
-        function openVault(color) {
-            const room = document.getElementById('room');
+        function startMathChallenge() {
+            const win = document.getElementById('win-math');
+            const bar = document.getElementById('math-timer-bar');
+            const a = Math.floor(Math.random() * 15) + 5;
+            const b = Math.floor(Math.random() * 10) + 2;
+            currentAnswer = a + b;
+            document.getElementById('math-question').innerText = `${a} + ${b}`;
+            document.getElementById('math-input').value = '';
+            win.classList.remove('hidden');
+            bar.style.transition = 'none'; bar.style.width = '100%';
+            setTimeout(() => { bar.style.transition = 'width 5s linear'; bar.style.width = '0%'; }, 50);
+            mathTimeout = setTimeout(() => { resetToDoors(); }, 5050);
+        }
+
+        function submitMath() {
+            const val = parseInt(document.getElementById('math-input').value);
+            if (val === currentAnswer) {
+                clearTimeout(mathTimeout);
+                document.getElementById('win-math').classList.add('hidden');
+                openVault(0, '#fff');
+            } else { resetToDoors(); }
+        }
+
+        function openVault(id, color) {
             const portal = document.getElementById('portal');
             const shape = document.getElementById('portal-shape');
-            
-            room.style.opacity = "0";
-            room.classList.add('pointer-events-none');
+            const body = document.getElementById('main-body');
             
             shape.style.background = color;
-            shape.style.boxShadow = `0 0 100px ${color}`;
             portal.classList.remove('hidden');
-            
-            // Zoom-Effekt
-            setTimeout(() => { shape.style.transform = 'scale(50)'; shape.style.opacity = '0'; }, 50);
+            shape.classList.add('animate-zoom');
+            document.getElementById('room').style.opacity = "0";
+            document.getElementById('room').classList.add('pointer-events-none');
 
-            // Tunnel Schichten generieren
-            let layers = 0;
-            const tInt = setInterval(() => {
-                const l = document.createElement('div');
-                l.className = 'tunnel-layer';
-                l.style.transform = `translate(-50%, -50%) rotate(${layers * 25}deg)`;
-                document.body.appendChild(l);
-                setTimeout(() => l.remove(), 2500);
-                layers++;
-                if(layers > 15) clearInterval(tInt);
-            }, 100);
+            // --- TUNNEL EFFEKT ---
+            let count = 0;
+            const tunnelInterval = setInterval(() => {
+                const layer = document.createElement('div');
+                layer.className = 'tunnel-layer';
+                // Leicht variierende Rotation für Tiefe
+                layer.style.transform = `translate(-50%, -50%) rotate(${count * 15}deg)`;
+                body.appendChild(layer);
+                
+                // Aufräumen
+                setTimeout(() => layer.remove(), 2500);
+                count++;
+                if(count > 15) clearInterval(tunnelInterval);
+            }, 150);
 
             setTimeout(() => {
                 portal.classList.add('hidden');
-                document.getElementById('win-binary').classList.remove('hidden');
-            }, 2000);
+                generatePixelArt();
+                document.getElementById('pixel-overlay').classList.replace('hidden', 'flex');
+                shape.classList.remove('animate-zoom');
+            }, 3000); // Längere Zeit für den Flug-Effekt
         }
 
-        function handleBinaryChoice(isCorrect) {
-            const win = document.getElementById('win-binary');
-            const body = document.getElementById('main-body');
-
-            if (isCorrect) {
-                win.classList.add('hidden');
-                const overlay = document.getElementById('pixel-overlay');
-                overlay.classList.remove('hidden');
-                overlay.classList.add('flex');
-                generatePixelGrid();
-            } else {
-                // Absturz
-                win.classList.add('fluttering');
-                body.classList.add('shaking');
-                document.getElementById('death-screen').classList.remove('hidden');
-                
-                setTimeout(() => {
-                    win.classList.remove('fluttering');
-                    win.classList.add('hidden');
-                    body.classList.remove('shaking');
-                    document.getElementById('death-screen').classList.add('hidden');
-                    // Reset zu den Türen
-                    const room = document.getElementById('room');
-                    room.style.opacity = "1";
-                    room.classList.remove('pointer-events-none');
-                    document.getElementById('portal-shape').style.transform = 'scale(1)';
-                    document.getElementById('portal-shape').style.opacity = '1';
-                    safeDoor = Math.floor(Math.random() * 3) + 1;
-                }, 2000);
-            }
-        }
-
-        function generatePixelGrid() {
+        function generatePixelArt() {
             const grid = document.getElementById('pixel-grid');
             grid.innerHTML = '';
             grid.style.gridTemplateColumns = `repeat(15, 18px)`;
             for (let i = 0; i < 225; i++) {
-                const p = document.createElement('div');
-                p.className = 'pixel';
-                p.onclick = () => p.style.backgroundColor = '#0ff';
-                grid.appendChild(p);
+                const pixel = document.createElement('div');
+                pixel.classList.add('pixel');
+                pixel.onclick = () => { pixel.style.backgroundColor = '#0ff'; };
+                grid.appendChild(pixel);
             }
+        }
+
+        function showQuiz() {
+            document.getElementById('pixel-overlay').classList.replace('flex', 'hidden');
+            document.getElementById('win-quiz').classList.remove('hidden');
+        }
+
+        function startChaos() {
+            document.getElementById('main-body').classList.add('shaking');
+            document.getElementById('win-quiz').classList.add('hidden');
+            const chaos = document.getElementById('chaos-container');
+            chaos.classList.remove('hidden');
+
+            for(let i=0; i<15; i++) {
+                setTimeout(() => {
+                    const div = document.createElement('div');
+                    div.className = "win-window w-64 p-2 pointer-events-auto";
+                    div.style.left = Math.random()*70 + "%";
+                    div.style.top = Math.random()*70 + "%";
+                    div.innerHTML = `<div class="win-title">Error</div><div class="p-4">FATAL ERROR ${i}0x99</div>`;
+                    chaos.appendChild(div);
+                }, i * 150);
+            }
+
+            setTimeout(() => {
+                document.getElementById('win-thriller').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('hidden-next').classList.remove('hidden');
+                }, 2000);
+            }, 1000);
         }
     </script>
 </body>
