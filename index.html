@@ -3,148 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Pixel Vault</title>
+    <title>Neon Pixel Vault - Fixed</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap'); /* Für Pixel-Schriftart */
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
         body {
-            background: #000000; /* Schwarz für Neon-Kontrast */
-            color: #E0E0E0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
             overflow: hidden;
             margin: 0;
         }
 
-        /* Mystischer Rauch-Hintergrund */
+        /* Rauch Effekt */
         .smoke-background {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://images.unsplash.com/photo-1549727440-6291a1005a8d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1920&q=80') center center / cover no-repeat;
-            opacity: 0.15; /* Leichter Rauch */
-            filter: grayscale(100%) blur(5px);
-            animation: smokePan 60s linear infinite alternate; /* Langsames Bewegen */
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-1549727440-6291a1005a8d?auto=format&fit=crop&w=1920&q=80') center/cover;
+            opacity: 0.1;
+            filter: grayscale(100%) blur(8px);
+            animation: smokePan 60s linear infinite alternate;
             z-index: -1;
         }
+        @keyframes smokePan { 0% { transform: scale(1.1); } 100% { transform: scale(1.3) translateX(-30px); } }
 
-        @keyframes smokePan {
-            0% { transform: scale(1.1) translateX(0); }
-            100% { transform: scale(1.1) translateX(-50px); }
-        }
-
-        /* Neon-Türen */
+        /* Neon Türen */
         .door {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            text-shadow: 0 0 5px rgba(255,255,255,0.8);
-            position: relative;
-            box-shadow: 0 0 15px var(--neon-color-light); /* Initialer Glanz */
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 999px 999px 0 0;
+            border: 2px solid var(--neon);
+            box-shadow: 0 0 15px var(--neon);
+            text-shadow: 0 0 10px var(--neon);
         }
         .door:hover {
-            transform: translateY(-20px) scale(1.05);
-            filter: brightness(1.5);
-            box-shadow: 0 0 40px var(--neon-color-dark), 0 0 80px var(--neon-color-dark); /* Stärkerer Neon-Glow */
-        }
-        .door::before { /* Innerer Neon-Rand */
-            content: '';
-            position: absolute;
-            inset: -5px;
-            border-radius: inherit;
-            border: 2px solid var(--neon-color-light);
-            box-shadow: inset 0 0 10px var(--neon-color-light);
-            transition: all 0.5s;
-        }
-        .door:hover::before {
-            inset: -10px;
-            border: 3px solid var(--neon-color-dark);
-            box-shadow: inset 0 0 20px var(--neon-color-dark);
+            transform: translateY(-20px);
+            box-shadow: 0 0 40px var(--neon), 0 0 80px var(--neon);
         }
 
-        /* Zoom Animation */
-        @keyframes zoomPortal {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(80); opacity: 0; }
-        }
-        .animate-zoom { animation: zoomPortal 1.1s forwards cubic-bezier(0.7, 0, 0.3, 1); }
+        /* Zoom */
+        @keyframes zoomPortal { to { transform: scale(100); opacity: 0; } }
+        .animate-zoom { animation: zoomPortal 1.2s forwards ease-in; }
 
-        /* Pixel Grid Overlay */
-        #pixel-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 110;
-        }
-        #pixel-grid {
-            display: grid;
-            border: 2px solid #555;
-            box-shadow: 0 0 30px rgba(0,255,255,0.5); /* Cyber-Glow für das Pixel-Bild */
-        }
-        .pixel {
-            width: var(--pixel-size);
-            height: var(--pixel-size);
-            background: black;
-            border: 1px solid rgba(255,255,255,0.05); /* Leichte Pixel-Trennung */
-            transition: background-color 0.1s;
-        }
+        /* Pixel-Gitter */
+        #pixel-grid { display: grid; background: #111; border: 2px solid #333; }
+        .pixel { width: 18px; height: 18px; border: 1px solid rgba(255,255,255,0.02); }
 
-        /* Windows 95 Style (für Quiz/Thriller) */
+        /* Windows Style */
         .win-window {
             background: #c0c0c0; border: 3px solid #fff; border-right-color: #404040; border-bottom-color: #404040;
-            color: black; box-shadow: 15px 15px 30px rgba(0,0,0,0.7);
-            font-family: 'VT323', monospace; /* Pixel-Schriftart für die Fenster */
-            text-transform: uppercase;
+            color: black; box-shadow: 15px 15px 40px rgba(0,0,0,0.8);
+            font-family: 'VT323', monospace;
         }
-        .win-title { background: #000080; color: #fff; padding: 5px 10px; font-weight: bold; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
-        .win-content { padding: 25px; }
-        button.win-btn { background: #c0c0c0; border: 2px solid #fff; border-right-color: #404040; border-bottom-color: #404040; padding: 5px 15px; cursor: pointer; font-weight: bold; }
-        button.win-btn:active { border: 2px solid #404040; border-right-color: #fff; border-bottom-color: #fff; }
-
-        /* Vibration (Chaos Modus) */
-        @keyframes shake {
-            0% { transform: translate(3px, 3px); } 50% { transform: translate(-3px, -3px); } 100% { transform: translate(3px, 3px); }
-        }
+        .win-title { background: #000080; color: white; padding: 5px 10px; display: flex; justify-content: space-between; }
+        
+        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(5px, 5px); } 75% { transform: translate(-5px, -5px); } }
         .shaking { animation: shake 0.1s infinite; }
-
     </style>
 </head>
 <body id="main-body" class="min-h-screen flex items-center justify-center">
 
     <div class="smoke-background"></div>
 
-    <div id="room" class="flex gap-10 z-10 transition-opacity duration-500">
-        <div onclick="openVault(1, '#00FFFF')" style="--neon-color-light: #00FFFF; --neon-color-dark: #008080;" class="door w-48 h-80 bg-gradient-to-t from-cyan-900 to-black rounded-t-full">
-            <span class="text-xl">ALPHA</span>
-        </div>
-        <div onclick="openVault(2, '#FF00FF')" style="--neon-color-light: #FF00FF; --neon-color-dark: #800080;" class="door w-48 h-80 bg-gradient-to-t from-fuchsia-900 to-black rounded-t-full">
-            <span class="text-xl">BETA</span>
-        </div>
-        <div onclick="openVault(3, '#FFFF00')" style="--neon-color-light: #FFFF00; --neon-color-dark: #808000;" class="door w-48 h-80 bg-gradient-to-t from-yellow-900 to-black rounded-t-full">
-            <span class="text-xl">GAMMA</span>
-        </div>
+    <div id="room" class="flex gap-10 z-10 transition-opacity duration-700">
+        <div onclick="openVault(1, '#0ff')" style="--neon: #0ff" class="door w-44 h-72 bg-cyan-950/20">ALPHA</div>
+        <div onclick="openVault(2, '#f0f')" style="--neon: #f0f" class="door w-44 h-72 bg-fuchsia-950/20">BETA</div>
+        <div onclick="openVault(3, '#ff0')" style="--neon: #ff0" class="door w-44 h-72 bg-yellow-950/20">GAMMA</div>
     </div>
 
     <div id="portal" class="fixed inset-0 hidden z-[100] flex items-center justify-center pointer-events-none">
-        <div id="portal-shape" class="w-48 h-80 rounded-t-full"></div>
+        <div id="portal-shape" class="w-44 h-72 rounded-t-full"></div>
     </div>
 
-    <div id="pixel-overlay" class="hidden">
-        <p class="text-white text-2xl mb-8 font-vt323">ENTDECKE DAS PIXEL-GEHEIMNIS</p>
-        <div id="pixel-grid-container">
-            <div id="pixel-grid"></div>
-        </div>
-        <button onclick="showQuiz()" class="px-12 py-4 mt-12 bg-[#00FF00] text-black rounded-full font-black tracking-widest uppercase text-sm shadow-xl hover:scale-105 transition-transform font-vt323">NÄCHSTE PHASE</button>
+    <div id="pixel-overlay" class="fixed inset-0 hidden z-[110] bg-black/95 flex flex-col items-center justify-center">
+        <h2 class="text-3xl mb-8 font-vt323 tracking-widest text-cyan-400">PIXEL DECODER ACTIVE</h2>
+        <div id="pixel-grid"></div>
+        <button onclick="showQuiz()" class="mt-10 px-10 py-3 bg-cyan-500 text-black font-black rounded-full hover:bg-white transition-all font-vt323 text-xl">NÄCHSTE PHASE</button>
     </div>
 
     <div id="win-quiz" class="fixed hidden z-[120] win-window w-[380px]">
-        <div class="win-title"><span>System Diagnostic Tool</span><span>
+        <div class="win-title"><span>Security Access</span><span>[?]</span></div>
+        <div class="win-content text-center">
+            <p class="mb-4 text-xl uppercase">Wie viele Ecken hat ein Kreis?</p>
+            <input type="text" id="quiz-input" class="w-full border-2 border-gray-800 p-2 mb-6 outline-none text-2xl">
+            <button onclick="startChaos()" class="bg-gray-300 border-2 border-white px-8 py-2 font-bold shadow-[2px_2px_0_#000]">OK</button>
+        </div>
+    </div>
+
+    <div id="win-thriller" class="fixed hidden z-[130] win-window w-[420px]">
+        <div class="win-title bg-red-700"><span>CRITICAL ERROR</span><span>[!!!]</span></div>
+        <div class="win-content text-center">
+            <div class="text-6xl font-black text-red-600 mb-2 animate-pulse font-vt323">DANGER</div>
+            <div class="text-4xl font-mono font-bold bg-black text-red-500 p-4 mb-6 border-4 border-red-600">
+                <span id="timer">10</span>s
+            </div>
+            <p class="mb-6 font-bold text-red-900 uppercase">ZUTRITT NUR FÜR BULLENPOWER FANS!</p>
+            <button onclick="window.location.href='https://www.bullenpower-uri.ch'" class="bg-green-600 text-white font-bold p-6 border-4 border-black text-2xl w-full shadow-2xl active:scale-95 transition-all">JETZT JA!</button>
+        </div>
+    </div>
+
+    <script>
+        function openVault(id, color) {
+            const portal = document.getElementById('portal');
+            const shape = document.getElementById('portal-shape');
+            shape.style.background = color;
+            portal.classList.remove('hidden');
+            shape.classList.add('animate-zoom');
+            document.getElementById('room').style.opacity = "0";
+
+            setTimeout(() => {
+                portal.classList.add('hidden');
+                generatePixelArt();
+                document.getElementById('pixel-overlay').classList.replace('hidden', 'flex');
+            }, 1100);
+        }
+
+        function generatePixelArt() {
+            const grid = document.getElementById('pixel-grid');
+            grid.innerHTML = '';
+            grid.style.gridTemplateColumns = `repeat(15, 18px)`;
+            
+            for (let i = 0; i < 15 * 15; i++) {
+                const pixel = document.createElement('div');
+                pixel.classList.add('pixel');
+                if (Math.random() > 0.8) {
+                    pixel.style.backgroundColor = '#0ff';
+                    pixel.style.boxShadow = '0 0 5px #0ff';
+                }
+                pixel.onclick = () => {
+                    pixel.style.backgroundColor = pixel.style.backgroundColor ? '' : '#0ff';
+                    pixel.style.boxShadow = pixel.style.boxShadow ? '' : '0 0 10px #0ff';
+                };
+                grid.appendChild(pixel);
+            }
+        }
+
+        function showQuiz() {
+            // WICHTIG: Das Pixel-Overlay komplett entfernen
+            document.getElementById('pixel-overlay').classList.replace('flex', 'hidden');
+            // Das Quiz Fenster anzeigen
+            document.getElementById('win-quiz').classList.remove('hidden');
+        }
+
+        function startChaos() {
+            const body = document.getElementById('main-body');
+            body.classList.add('shaking');
+            document.getElementById('win-quiz').classList.add('hidden');
+            
+            // Chaos Pixel anzeigen
+            document.getElementById('pixel-overlay').classList.replace('hidden', 'flex');
+            const pixels = document.querySelectorAll('.pixel');
+            pixels.forEach(p => {
+                p.style.backgroundColor = Math.random() > 0.5 ? 'red' : 'black';
+            });
+
+            setTimeout(() => {
+                body.classList.remove('shaking');
+                document.getElementById('pixel-overlay').classList.replace('flex', 'hidden');
+                startThriller();
+            }, 3000);
+        }
+
+        function startThriller() {
+            document.getElementById('win-thriller').classList.remove('hidden');
+            let timeLeft = 10;
+            const countdown = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    alert("TIMEOUT!");
+                    location.reload();
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
