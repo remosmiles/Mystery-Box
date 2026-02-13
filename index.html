@@ -80,7 +80,7 @@
         </div>
     </div>
 
-    <script>
+   <script>
         function openVault(id, color) {
             const shape = document.getElementById('portal-shape');
             shape.style.background = color;
@@ -90,8 +90,25 @@
 
             setTimeout(() => {
                 const img = document.getElementById('result-img');
-                img.src = `https://images.unsplash.com/photo-1?auto=format&fit=crop&w=600&q=80&sig=${Math.random()}&keyword=nature`;
-                document.getElementById('overlay-photo').classList.remove('hidden');
+                const randomId = Math.floor(Math.random() * 1000);
+                
+                // Wir nutzen jetzt die stabilen Unsplash Source Links
+                let topic = "nature";
+                if(id === 1) topic = "space";
+                if(id === 2) topic = "cyberpunk";
+                
+                img.src = `https://images.unsplash.com/featured/?${topic}&sig=${randomId}`;
+                
+                // Falls das Bild lädt, zeigen wir es an
+                img.onload = () => {
+                    document.getElementById('overlay-photo').classList.remove('hidden');
+                };
+                
+                // Sicherheitshalber: Falls das Bild zu lange braucht, trotzdem weitermachen
+                setTimeout(() => {
+                    document.getElementById('overlay-photo').classList.remove('hidden');
+                }, 2000);
+                
             }, 900);
         }
 
@@ -103,20 +120,20 @@
         function startChaos() {
             const body = document.getElementById('main-body');
             const img = document.getElementById('result-img');
-            
-            // Bildschirm vibriert
+            const randomId = Math.floor(Math.random() * 1000);
+
             body.classList.add('shaking');
-            
-            // Traurige Bilder erscheinen (Egal was man tippt)
             document.getElementById('win-quiz').classList.add('hidden');
             document.getElementById('overlay-photo').classList.remove('hidden');
-            img.src = `https://images.unsplash.com/photo-1?auto=format&fit=crop&w=600&q=80&sig=${Math.random()}&keyword=sad,rain`;
+            
+            // Trauriges Bild laden
+            img.src = `https://images.unsplash.com/featured/?sad,rain&sig=${randomId}`;
 
             setTimeout(() => {
                 body.classList.remove('shaking');
                 document.getElementById('overlay-photo').classList.add('hidden');
                 startThriller();
-            }, 3000); // 3 Sekunden Chaos
+            }, 3000);
         }
 
         function startThriller() {
@@ -129,7 +146,7 @@
                 timerDisplay.innerText = timeLeft;
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
-                    alert("ZEIT ABGELAUFEN!");
+                    alert("ZEIT ABGELAUFEN! BULLEN-POWER WARTET NICHT!");
                     location.reload();
                 }
             }, 1000);
