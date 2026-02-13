@@ -3,99 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Chaos Vault - Fixed</title>
+    <title>Neon Chaos Vault - Final Version</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
         
-        body { 
-            background: #000; 
-            color: #fff; 
-            font-family: 'Segoe UI', sans-serif; 
-            overflow: hidden; 
-            margin: 0; 
-            perspective: 1000px;
-        }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; overflow: hidden; margin: 0; perspective: 1000px; }
 
-        /* Hintergrund & Tunnel */
         .smoke-background {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1549727440-6291a1005a8d?auto=format&fit=crop&w=1920&q=80') center/cover;
             opacity: 0.15; filter: grayscale(100%) blur(5px); z-index: -1;
         }
 
+        /* Flug-Tunnel */
         .tunnel-layer {
             position: fixed; top: 50%; left: 50%; width: 100vw; height: 100vh;
             background: url('https://images.unsplash.com/photo-1549727440-6291a1005a8d?auto=format&fit=crop&w=1920&q=80') center/cover;
             transform: translate(-50%, -50%) scale(0.1); opacity: 0; pointer-events: none; z-index: 50;
             border: 2px solid rgba(0, 255, 255, 0.5); animation: hyperdrive 2.5s ease-in forwards;
         }
-
         @keyframes hyperdrive {
-            0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0; filter: blur(10px); }
+            0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0; }
             20% { opacity: 0.8; }
-            100% { transform: translate(-50%, -50%) scale(8); opacity: 0; filter: blur(0px); }
+            100% { transform: translate(-50%, -50%) scale(8); opacity: 0; }
         }
 
-        /* Windows 95 Style */
+        /* Fenster Design */
         .win-window { background: #c0c0c0; border: 3px solid #fff; border-right-color: #404040; border-bottom-color: #404040; color: black; box-shadow: 15px 15px 40px rgba(0,0,0,0.8); font-family: 'VT323', monospace; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-        .win-title { background: #000080; color: white; padding: 5px 10px; display: flex; justify-content: space-between; align-items: center; }
-        .win-content { padding: 20px; }
+        .win-title { background: #000080; color: white; padding: 5px 10px; display: flex; justify-content: space-between; }
 
         /* Türen */
-        .door { transition: all 0.5s; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 999px 999px 0 0; border: 2px solid var(--neon); box-shadow: 0 0 15px var(--neon); text-shadow: 0 0 10px var(--neon); font-weight: bold; }
-        .door:hover { transform: translateY(-20px); box-shadow: 0 0 40px var(--neon); }
+        .door { transition: all 0.3s; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 999px 999px 0 0; border: 2px solid var(--neon); box-shadow: 0 0 15px var(--neon); text-shadow: 0 0 10px var(--neon); font-weight: bold; }
+        .door:hover { transform: translateY(-10px); filter: brightness(1.5); }
+        .door-error { animation: door-red 0.5s; }
+        @keyframes door-red { 0%, 100% { border-color: red; box-shadow: 0 0 20px red; } 50% { border-color: white; } }
 
         /* Absturz */
-        @keyframes flutter {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            25% { transform: translate(-55%, -45%) rotate(5deg); }
-            50% { transform: translate(-45%, -55%) rotate(-5deg); }
-            100% { transform: translate(-50%, -50%) rotate(0deg); }
-        }
-        .fluttering { animation: flutter 0.1s infinite !important; filter: invert(1) sepia(1) saturate(5); }
-        
-        #pixel-grid { display: grid; background: #111; border: 2px solid #333; }
-        .pixel { width: 18px; height: 18px; border: 1px solid rgba(255,255,255,0.05); cursor: crosshair; }
-        
-        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(8px, 8px); } 75% { transform: translate(-8px, -8px); } }
+        @keyframes flutter { 0% { transform: translate(-50%, -50%) rotate(0deg); } 25% { transform: translate(-52%, -48%) rotate(3deg); } 75% { transform: translate(-48%, -52%) rotate(-3deg); } }
+        .fluttering { animation: flutter 0.1s infinite !important; filter: invert(1); }
         .shaking { animation: shake 0.05s infinite; }
+        @keyframes shake { 0%, 100% { transform: translate(0,0); } 25% { transform: translate(5px, 5px); } 75% { transform: translate(-5px, -5px); } }
+
+        .pixel { width: 18px; height: 18px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
     </style>
 </head>
 <body id="main-body" class="min-h-screen flex items-center justify-center">
 
     <div class="smoke-background"></div>
 
-    <div id="room" class="flex gap-10 z-10 transition-opacity duration-700">
-        <div onclick="checkDoor(1, '#0ff')" style="--neon: #0ff" class="door w-44 h-72 bg-cyan-950/20">ALPHA</div>
-        <div onclick="checkDoor(2, '#f0f')" style="--neon: #f0f" class="door w-44 h-72 bg-fuchsia-950/20">BETA</div>
-        <div onclick="checkDoor(3, '#ff0')" style="--neon: #ff0" class="door w-44 h-72 bg-yellow-950/20">GAMMA</div>
+    <div id="room" class="flex gap-10 z-10">
+        <div id="door-1" onclick="checkDoor(1, '#0ff')" style="--neon: #0ff" class="door w-44 h-72 bg-cyan-950/20">ALPHA</div>
+        <div id="door-2" onclick="checkDoor(2, '#f0f')" style="--neon: #f0f" class="door w-44 h-72 bg-fuchsia-950/20">BETA</div>
+        <div id="door-3" onclick="checkDoor(3, '#ff0')" style="--neon: #ff0" class="door w-44 h-72 bg-yellow-950/20">GAMMA</div>
     </div>
 
-    <div id="win-binary" class="hidden z-[200] win-window w-[400px]">
-        <div class="win-title"><span>SECURITY_CHECK.EXE</span><span>[?]</span></div>
-        <div class="win-content text-center">
-            <p class="text-2xl mb-6 font-bold uppercase">Ist 1010 in Binär gleich 10?</p>
+    <div id="win-binary" class="hidden z-[200] win-window w-[350px]">
+        <div class="win-title"><span>GATE_CONTROL.EXE</span><span>[?]</span></div>
+        <div class="p-6 text-center">
+            <p class="text-xl mb-6 font-bold uppercase">Ist 1010 in Binär gleich 10?</p>
             <div class="flex gap-4 justify-center">
-                <button onclick="handleBinaryChoice(true)" class="bg-gray-300 border-2 border-white px-8 py-2 font-bold shadow-[2px_2px_0_#000] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]">JA</button>
-                <button onclick="handleBinaryChoice(false)" class="bg-gray-300 border-2 border-white px-8 py-2 font-bold shadow-[2px_2px_0_#000] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]">NEIN</button>
+                <button onclick="handleBinaryChoice(true)" class="bg-gray-300 border-2 border-white px-6 py-2 font-bold shadow-[2px_2px_0_#000]">JA</button>
+                <button onclick="handleBinaryChoice(false)" class="bg-gray-300 border-2 border-white px-6 py-2 font-bold shadow-[2px_2px_0_#000]">NEIN</button>
             </div>
         </div>
     </div>
 
-    <div id="pixel-overlay" class="fixed inset-0 hidden z-[210] bg-black/95 flex flex-col items-center justify-center">
-        <h2 class="text-3xl mb-8 font-vt323 text-cyan-400">PIXEL DECODER SYSTEM</h2>
-        <div id="pixel-grid"></div>
-        <button onclick="showFinalError()" class="mt-10 px-10 py-3 bg-cyan-500 text-black font-black rounded-full font-vt323 text-xl hover:bg-cyan-400">DATEN EXTRAHIEREN</button>
+    <div id="pixel-overlay" class="fixed inset-0 hidden z-[210] bg-black/98 flex flex-col items-center justify-center">
+        <h2 class="text-3xl mb-8 font-vt323 text-cyan-400">PIXEL DECODER LOADED</h2>
+        <div id="pixel-grid" class="grid bg-gray-900 border-2 border-cyan-900"></div>
+        <button onclick="window.location.href='https://www.bullenpower-uri.ch'" class="mt-8 px-8 py-3 bg-cyan-600 text-white font-bold rounded-lg font-vt323 hover:bg-cyan-400">EXIT SYSTEM</button>
     </div>
 
-    <div id="death-screen" class="hidden fixed inset-0 z-[300] bg-red-900/90 flex flex-col items-center justify-center">
-        <div class="text-[15rem] leading-none">💀</div>
-        <h1 class="text-6xl font-black">SYSTEM CRITICAL</h1>
+    <div id="death-screen" class="hidden fixed inset-0 z-[300] bg-red-950 flex flex-col items-center justify-center">
+        <div class="text-[12rem]">💀</div>
+        <h1 class="text-5xl font-black text-white">FATAL ERROR</h1>
     </div>
 
-    <div id="portal" class="fixed inset-0 hidden z-[100] flex items-center justify-center pointer-events-none">
-        <div id="portal-shape" class="w-44 h-72 rounded-t-full"></div>
+    <div id="portal" class="fixed inset-0 hidden z-[100] flex items-center justify-center">
+        <div id="portal-shape" class="w-44 h-72 rounded-t-full transition-transform duration-1000"></div>
     </div>
 
     <script>
@@ -103,91 +89,90 @@
 
         function checkDoor(id, color) {
             if (id === safeDoor) {
-                openVault(id, color);
+                openVault(color);
             } else {
-                alert("Falsche Tür! Das System sperrt sich.");
-                safeDoor = Math.floor(Math.random() * 3) + 1; // Neue Tür würfeln
+                const el = document.getElementById(`door-${id}`);
+                el.classList.add('door-error');
+                setTimeout(() => el.classList.remove('door-error'), 500);
+                // Optional: Tür nach jedem Fehler neu würfeln? Aktuell bleibt sie gleich, bis man trifft.
             }
         }
 
-        function openVault(id, color) {
+        function openVault(color) {
+            const room = document.getElementById('room');
             const portal = document.getElementById('portal');
             const shape = document.getElementById('portal-shape');
-            const body = document.getElementById('main-body');
+            
+            room.style.opacity = "0";
+            room.classList.add('pointer-events-none');
             
             shape.style.background = color;
+            shape.style.boxShadow = `0 0 100px ${color}`;
             portal.classList.remove('hidden');
-            shape.classList.add('animate-zoom');
-            document.getElementById('room').style.opacity = "0";
-            document.getElementById('room').classList.add('pointer-events-none');
+            
+            // Zoom-Effekt
+            setTimeout(() => { shape.style.transform = 'scale(50)'; shape.style.opacity = '0'; }, 50);
 
-            // Tunnel-Flug
-            let count = 0;
-            const tunnelInterval = setInterval(() => {
-                const layer = document.createElement('div');
-                layer.className = 'tunnel-layer';
-                layer.style.transform = `translate(-50%, -50%) rotate(${count * 20}deg)`;
-                body.appendChild(layer);
-                setTimeout(() => layer.remove(), 2500);
-                count++;
-                if(count > 12) clearInterval(tunnelInterval);
-            }, 150);
+            // Tunnel Schichten generieren
+            let layers = 0;
+            const tInt = setInterval(() => {
+                const l = document.createElement('div');
+                l.className = 'tunnel-layer';
+                l.style.transform = `translate(-50%, -50%) rotate(${layers * 25}deg)`;
+                document.body.appendChild(l);
+                setTimeout(() => l.remove(), 2500);
+                layers++;
+                if(layers > 15) clearInterval(tInt);
+            }, 100);
 
-            // Nach Flug -> Abfrage zeigen
             setTimeout(() => {
                 portal.classList.add('hidden');
-                shape.classList.remove('animate-zoom');
                 document.getElementById('win-binary').classList.remove('hidden');
-            }, 2600);
+            }, 2000);
         }
 
         function handleBinaryChoice(isCorrect) {
             const win = document.getElementById('win-binary');
-            const death = document.getElementById('death-screen');
             const body = document.getElementById('main-body');
 
             if (isCorrect) {
-                // RICHTIG: Zeige Pixel Decoder
                 win.classList.add('hidden');
-                document.getElementById('pixel-overlay').classList.replace('hidden', 'flex');
-                generatePixelArt();
+                const overlay = document.getElementById('pixel-overlay');
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+                generatePixelGrid();
             } else {
-                // FALSCH: Absturz
+                // Absturz
                 win.classList.add('fluttering');
-                death.classList.remove('hidden');
                 body.classList.add('shaking');
+                document.getElementById('death-screen').classList.remove('hidden');
                 
                 setTimeout(() => {
                     win.classList.remove('fluttering');
                     win.classList.add('hidden');
-                    death.classList.add('hidden');
                     body.classList.remove('shaking');
-                    // Zurück zum Anfang
-                    document.getElementById('room').style.opacity = "1";
-                    document.getElementById('room').classList.remove('pointer-events-none');
+                    document.getElementById('death-screen').classList.add('hidden');
+                    // Reset zu den Türen
+                    const room = document.getElementById('room');
+                    room.style.opacity = "1";
+                    room.classList.remove('pointer-events-none');
+                    document.getElementById('portal-shape').style.transform = 'scale(1)';
+                    document.getElementById('portal-shape').style.opacity = '1';
                     safeDoor = Math.floor(Math.random() * 3) + 1;
                 }, 2000);
             }
         }
 
-        function generatePixelArt() {
+        function generatePixelGrid() {
             const grid = document.getElementById('pixel-grid');
             grid.innerHTML = '';
             grid.style.gridTemplateColumns = `repeat(15, 18px)`;
             for (let i = 0; i < 225; i++) {
-                const pixel = document.createElement('div');
-                pixel.classList.add('pixel');
-                pixel.onclick = () => { 
-                    pixel.style.backgroundColor = '#0ff'; 
-                    pixel.style.boxShadow = '0 0 10px #0ff';
-                };
-                grid.appendChild(pixel);
+                const p = document.createElement('div');
+                p.className = 'pixel';
+                p.onclick = () => p.style.backgroundColor = '#0ff';
+                grid.appendChild(p);
             }
-        }
-
-        function showFinalError() {
-            // Hier kannst du die allerletzte Seite oder den "Bullenpower" Link einbauen
-            window.location.href = 'https://www.bullenpower-uri.ch';
         }
     </script>
 </body>
