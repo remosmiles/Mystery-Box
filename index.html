@@ -3,20 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Chaos Vault</title>
+    <title>Neon Chaos Vault - Hyperdrive</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; overflow: hidden; margin: 0; }
+        
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Segoe UI', sans-serif; 
+            overflow: hidden; 
+            margin: 0; 
+            perspective: 1000px; /* Ermöglicht 3D-Effekte */
+        }
 
+        /* Standard Hintergrund */
         .smoke-background {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://images.unsplash.com/photo-1549727440-6291a1005a8d?auto=format&fit=crop&w=1920&q=80') center/cover;
-            opacity: 0.1; filter: grayscale(100%) blur(8px); animation: smokePan 60s linear infinite alternate; z-index: -1;
+            opacity: 0.15; filter: grayscale(100%) blur(5px); 
+            z-index: -1;
         }
-        @keyframes smokePan { 0% { transform: scale(1.1); } 100% { transform: scale(1.3) translateX(-30px); } }
 
-        .door { transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 999px 999px 0 0; border: 2px solid var(--neon); box-shadow: 0 0 15px var(--neon); text-shadow: 0 0 10px var(--neon); }
+        /* Der Tunnel-Flug-Effekt */
+        .tunnel-layer {
+            position: fixed;
+            top: 50%; left: 50%;
+            width: 100vw; height: 100vh;
+            background: url('https://images.unsplash.com/photo-1549727440-6291a1005a8d?auto=format&fit=crop&w=1920&q=80') center/cover;
+            transform: translate(-50%, -50%) scale(0.1);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 50;
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.2);
+            animation: hyperdrive 2.5s ease-in forwards;
+        }
+
+        @keyframes hyperdrive {
+            0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0; filter: blur(10px) hue-rotate(0deg); }
+            20% { opacity: 0.8; }
+            100% { transform: translate(-50%, -50%) scale(8); opacity: 0; filter: blur(0px) hue-rotate(180deg); }
+        }
+
+        .door { 
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+            cursor: pointer; display: flex; align-items: center; justify-content: center; 
+            border-radius: 999px 999px 0 0; border: 2px solid var(--neon); 
+            box-shadow: 0 0 15px var(--neon); text-shadow: 0 0 10px var(--neon); 
+        }
         .door:hover { transform: translateY(-20px); box-shadow: 0 0 40px var(--neon), 0 0 80px var(--neon); }
 
         @keyframes zoomPortal { to { transform: scale(100); opacity: 0; } }
@@ -136,17 +171,35 @@
         function openVault(id, color) {
             const portal = document.getElementById('portal');
             const shape = document.getElementById('portal-shape');
+            const body = document.getElementById('main-body');
+            
             shape.style.background = color;
             portal.classList.remove('hidden');
             shape.classList.add('animate-zoom');
             document.getElementById('room').style.opacity = "0";
             document.getElementById('room').classList.add('pointer-events-none');
 
+            // --- TUNNEL EFFEKT ---
+            let count = 0;
+            const tunnelInterval = setInterval(() => {
+                const layer = document.createElement('div');
+                layer.className = 'tunnel-layer';
+                // Leicht variierende Rotation für Tiefe
+                layer.style.transform = `translate(-50%, -50%) rotate(${count * 15}deg)`;
+                body.appendChild(layer);
+                
+                // Aufräumen
+                setTimeout(() => layer.remove(), 2500);
+                count++;
+                if(count > 15) clearInterval(tunnelInterval);
+            }, 150);
+
             setTimeout(() => {
                 portal.classList.add('hidden');
                 generatePixelArt();
                 document.getElementById('pixel-overlay').classList.replace('hidden', 'flex');
-            }, 1100);
+                shape.classList.remove('animate-zoom');
+            }, 3000); // Längere Zeit für den Flug-Effekt
         }
 
         function generatePixelArt() {
@@ -172,7 +225,6 @@
             const chaos = document.getElementById('chaos-container');
             chaos.classList.remove('hidden');
 
-            // Diverse Fehlerfenster aufploppen lassen
             for(let i=0; i<15; i++) {
                 setTimeout(() => {
                     const div = document.createElement('div');
@@ -190,18 +242,6 @@
                     document.getElementById('hidden-next').classList.remove('hidden');
                 }, 2000);
             }, 1000);
-        }
-
-        function generatePixelArt() {
-            const grid = document.getElementById('pixel-grid');
-            grid.innerHTML = '';
-            grid.style.gridTemplateColumns = `repeat(15, 18px)`;
-            for (let i = 0; i < 15 * 15; i++) {
-                const pixel = document.createElement('div');
-                pixel.classList.add('pixel');
-                pixel.onclick = () => { pixel.style.backgroundColor = '#0ff'; };
-                grid.appendChild(pixel);
-            }
         }
     </script>
 </body>
